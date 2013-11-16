@@ -1,0 +1,16 @@
+{
+	"Tiles": [
+{"tileName":"A1" , "Nglue":"B", "Nstrength":"1" , "Eglue":"NC" , "Estrength":"1" , "Sglue":"0" , "Sstrength":"1" , "Wglue":"0" , "Wstrength":"1" , "label":"null"} ,
+{"tileName":"A2" , "Nglue":"B", "Nstrength":"1" , "Eglue":"NC" , "Estrength":"1" , "Sglue":"1" , "Sstrength":"1" , "Wglue":"1" , "Wstrength":"1" , "label":"null"} ,
+{"tileName":"A3" , "Nglue":"B", "Nstrength":"1" , "Eglue":"C" , "Estrength":"1" , "Sglue":"0" , "Sstrength":"1" , "Wglue":"1" , "Wstrength":"1" , "label":"null"} ,
+{"tileName":"A4" , "Nglue":"B", "Nstrength":"1" , "Eglue":"C" , "Estrength":"1" , "Sglue":"1" , "Sstrength":"1" , "Wglue":"10" , "Wstrength":"1" , "label":"null"} ,
+{"tileName":"A5" , "Nglue":"0", "Nstrength":"1" , "Eglue":"0" , "Estrength":"1" , "Sglue":"0" , "Sstrength":"1" , "Wglue":"NC" , "Wstrength":"1" , "label":"null"} ,
+{"tileName":"A6" , "Nglue":"1", "Nstrength":"1" , "Eglue":"0" , "Estrength":"1" , "Sglue":"1" , "Sstrength":"1" , "Wglue":"NC" , "Wstrength":"1" , "label":"null"} ,
+{"tileName":"A7" , "Nglue":"1", "Nstrength":"1" , "Eglue":"1" , "Estrength":"1" , "Sglue":"0" , "Sstrength":"1" , "Wglue":"NC" , "Wstrength":"1" , "label":"null"} ,
+{"tileName":"A8" , "Nglue":"0", "Nstrength":"1" , "Eglue":"1" , "Estrength":"1" , "Sglue":"1" , "Sstrength":"1" , "Wglue":"C" , "Wstrength":"1" , "label":"null"} ,
+{"tileName":"A9" , "Nglue":"1", "Nstrength":"1" , "Eglue":"10" , "Estrength":"1" , "Sglue":"1" , "Sstrength":"1" , "Wglue":"C" , "Wstrength":"1" , "label":"null"} ,
+{"tileName":"A10" , "Nglue":"0", "Nstrength":"1" , "Eglue":"10" , "Estrength":"1" , "Sglue":"0" , "Sstrength":"1" , "Wglue":"C" , "Wstrength":"1" , "label":"null"} ,
+{"tileName":"B1" , "Nglue":"NCC", "Nstrength":"1" , "Eglue":"NC" , "Estrength":"1" , "Sglue":"0" , "Sstrength":"1" , "Wglue":"0" , "Wstrength":"1" , "label":"null"} ,
+			]
+
+}

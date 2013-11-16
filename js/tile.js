@@ -10,6 +10,14 @@ var context = drawingCanvas.getContext('2d');
 moveTo(0,0);
 }
 
+$("#input1").click(function(){
+	$(".errors").hide();
+})
+
+$("#input2").click(function(){
+	$(".errors").hide();
+})
+
 $("#input1").blur(function(){
 
 	var input1 = $("#input1").val();

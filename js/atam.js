@@ -35,16 +35,261 @@ atam.factory('universe', 'tileSet', [function(tileSet) {
 	};
 	//Assemble the construct
 	universe.assemble = function(){
-		//Dequeue the first item out of the unique tileset
-		var candidateTile = tileSet.set.shift();
-		//Iterate through the occupied tiles and see if the tile will fit
-		for(var i=0; i<universe.sticky.length; i++){
-			//The x coordinate of the current sticky tile
-			var sticky_x = universe.sticky[i].x;
-			//The y coordinate of the current sticky tile
-			var sticky_y = universe.sticky[i].y;
-			//If the tile north of the current tile isnt set
-			if(universe.grid[universe.sticky[i] === undefined
+		//Loop breaker
+		var loopBreaker = 0;
+		while(true){
+			//Dequeue the first item out of the unique tileset
+			var candidateTile = tileSet.set.shift();
+			//If a tile is matched this will be set to true
+			var match = false;
+			//Iterate through the occupied tiles and see if the tile will fit
+			for(var i=0; i<universe.sticky.length; i++){
+				//The current sum of the binding strength
+				var bindSum = 0;
+				//The x coordinate of the current sticky tile
+				var sticky_x = universe.sticky[i].x;
+				//The y coordinate of the current sticky tile
+				var sticky_y = universe.sticky[i].y;
+				
+				//If the tile north of the sticky tile is not set and the glue matches
+				if(universe.grid[sticky_y - 1][sticky_x] === undefined && candidateTile.sglue.label == universe.sticky[i].nglue.label){
+					//Add the strength to the bind sum
+					bindSum += candidateTile.sglue.strength;
+					//If the bind sum is greater than or equal to the temp
+					if(bindSum >= universe.temp){
+						//Insert the candidate tile
+						universe.insert(sticky_x, sticky_y - 1, candidateTile);
+						//Tile match!
+						match = true;
+						loopBreaker = 0;
+						continue;
+					}
+					//If the bind sum is not greater than or equal to the temp, check for cooperative binding
+					else{
+						//Check north of the cadidate tile
+						if(universe.grid[sticky_y - 2][sticky_x] !== undefined && candidateTile.nglue.label == universe.grid[sticky_y - 2][sticky_x].sglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.nglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x, sticky_y - 1, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+						//Check east of the cadidate tile
+						if(universe.grid[sticky_y - 2][sticky_x + 1] !== undefined && candidateTile.eglue.label == universe.grid[sticky_y - 2][sticky_x + 1].wglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.eglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x, sticky_y - 1, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+						//Check west of the cadidate tile
+						if(universe.grid[sticky_y - 2][sticky_x - 1] !== undefined && candidateTile.wglue.label == universe.grid[sticky_y - 2][sticky_x - 1].eglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.wglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x, sticky_y - 1, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+					}
+				}
+				
+				//If the tile east of the sticky tile is not set and the glue matches
+				if(universe.grid[sticky_y][sticky_x + 1] === undefined && candidateTile.wglue.label == universe.sticky[i].eglue.label){
+					//Add the strength to the bind sum
+					bindSum += candidateTile.wglue.strength;
+					//If the bind sum is greater than or equal to the temp
+					if(bindSum >= universe.temp){
+						//Insert the candidate tile
+						universe.insert(sticky_x + 1, sticky_y, candidateTile);
+						//Tile match!
+						match = true;
+						continue;
+					}
+					//If the bind sum is not greater than or equal to the temp, check for cooperative binding
+					else{
+						//Check north of the cadidate tile
+						if(universe.grid[sticky_y - 1][sticky_x + 1] !== undefined && candidateTile.nglue.label == universe.grid[sticky_y - 1][sticky_x + 1].sglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.nglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x + 1, sticky_y, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+						//Check east of the cadidate tile
+						if(universe.grid[sticky_y][sticky_x + 2] !== undefined && candidateTile.eglue.label == universe.grid[sticky_y][sticky_x + 2].wglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.eglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x + 1, sticky_y, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+						//Check south of the cadidate tile
+						if(universe.grid[sticky_y + 1][sticky_x + 1] !== undefined && candidateTile.sglue.label == universe.grid[sticky_y + 1][sticky_x + 1].nglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.sglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x + 1, sticky_y, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+					}
+				}
+				
+				//If the tile south of the sticky tile is not set and the glue matches
+				if(universe.grid[sticky_y + 1][sticky_x] === undefined && candidateTile.nglue.label == universe.sticky[i].sglue.label){
+					//Add the strength to the bind sum
+					bindSum += candidateTile.nglue.strength;
+					//If the bind sum is greater than or equal to the temp
+					if(bindSum >= universe.temp){
+						//Insert the candidate tile
+						universe.insert(sticky_x, sticky_y + 1, candidateTile);
+						//Tile match!
+						match = true;
+						loopBreaker = 0;
+						continue;
+					}
+					//If the bind sum is not greater than or equal to the temp, check for cooperative binding
+					else{
+						//Check south of the cadidate tile
+						if(universe.grid[sticky_y + 2][sticky_x] !== undefined && candidateTile.sglue.label == universe.grid[sticky_y + 2][sticky_x].nglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.nglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x, sticky_y + 1, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+						//Check east of the cadidate tile
+						if(universe.grid[sticky_y + 1][sticky_x + 1] !== undefined && candidateTile.eglue.label == universe.grid[sticky_y + 1][sticky_x + 1].wglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.eglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x, sticky_y + 1, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+						//Check west of the cadidate tile
+						if(universe.grid[sticky_y + 1][sticky_x - 1] !== undefined && candidateTile.wglue.label == universe.grid[sticky_y + 1][sticky_x - 1].eglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.wglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x, sticky_y + 1, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+					}
+				}
+
+				//If the tile west of the sticky tile is not set and the glue matches
+				if(universe.grid[sticky_y][sticky_x - 1] === undefined && candidateTile.eglue.label == universe.sticky[i].wglue.label){
+					//Add the strength to the bind sum
+					bindSum += candidateTile.eglue.strength;
+					//If the bind sum is greater than or equal to the temp
+					if(bindSum >= universe.temp){
+						//Insert the candidate tile
+						universe.insert(sticky_x - 1, sticky_y, candidateTile);
+						//Tile match!
+						match = true;
+						loopBreaker = 0;
+						continue;
+					}
+					//If the bind sum is not greater than or equal to the temp, check for cooperative binding
+					else{
+						//Check north of the cadidate tile
+						if(universe.grid[sticky_y + 1][sticky_x - 1] !== undefined && candidateTile.nglue.label == universe.grid[sticky_y + 1][sticky_x - 1].sglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.nglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x - 1, sticky_y, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+						//Check west of the cadidate tile
+						if(universe.grid[sticky_y][sticky_x - 2] !== undefined && candidateTile.wglue.label == universe.grid[sticky_y][sticky_x - 2].eglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.wglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x - 1, sticky_y, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+						//Check south of the cadidate tile
+						if(universe.grid[sticky_y + 1][sticky_x - 1] !== undefined && candidateTile.sglue.label == universe.grid[sticky_y + 1][sticky_x - 1].nglue){
+							//Add the strength to the bind sum
+							bindSum =+ candidateTile.sglue.strength;
+							if(bindSum >= universe.temp){
+								//Insert the candidate tile
+								universe.insert(sticky_x - 1, sticky_y, candidateTile);
+								//Tile match!
+								match = true;
+								loopBreaker = 0;
+								continue;
+							}
+						}
+					}
+				}
+			}
+			//If match set loopbreaker to 0
+			if(match){
+				loopBreaker = 0;
+			} else {
+				loopBreaker ++;
+			}
+			//If the loopbreaker is bigger than the tileset array, break out because nothing else can be assembled
+			if(loopBreaker > tileSet.set.length){
+				break;
+			}
+			//Push the candidate tile back onto the array
+			tileSet.set.push(candidateTile);
 		}
 	};
 	//Insert a tile into at a specific location

@@ -51,10 +51,10 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 				//The y coordinate of the current sticky tile
 				var sticky_y = universe.sticky[i].y;
 				
-				//If the tile north of the sticky tile is not set and the glue matches
-				if(universe.grid[sticky_y - 1][sticky_x] === undefined && candidateTile.sglue.label == universe.sticky[i].nglue.label){
+				//Check north of tile
+				if((universe.grid[sticky_y - 1] === undefined || universe.grid[sticky_y - 1][sticky_x] === undefined) && universe.sticky[i].nglue !== null && candidateTile.sglue !== null && candidateTile.sglue.label === universe.sticky[i].nglue.label){
 					//Add the strength to the bind sum
-					bindSum += candidateTile.sglue.strength;
+					bindSum = bindSum + candidateTile.sglue.strength;
 					//If the bind sum is greater than or equal to the temp
 					if(bindSum >= universe.temp){
 						//Insert the candidate tile
@@ -67,9 +67,9 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 					//If the bind sum is not greater than or equal to the temp, check for cooperative binding
 					else{
 						//Check north of the cadidate tile
-						if(universe.grid[sticky_y - 2][sticky_x] !== undefined && candidateTile.nglue.label == universe.grid[sticky_y - 2][sticky_x].sglue){
+						if((universe.grid[sticky_y - 2] !== undefined && universe.grid[sticky_y - 2][sticky_x] !== undefined) && candidateTile.nglue !== null && candidateTile.nglue.label === universe.grid[sticky_y - 2][sticky_x].sglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.nglue.strength;
+							bindSum = bindSum + candidateTile.nglue.strength;
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x, sticky_y - 1, candidateTile);
@@ -80,9 +80,10 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 						//Check east of the cadidate tile
-						if(universe.grid[sticky_y - 2][sticky_x + 1] !== undefined && candidateTile.eglue.label == universe.grid[sticky_y - 2][sticky_x + 1].wglue){
+						if((universe.grid[sticky_y - 2] !== undefined && universe.grid[sticky_y - 2][sticky_x + 1] !== undefined) && candidateTile.eglue !== null && candidateTile.eglue.label === universe.grid[sticky_y - 2][sticky_x + 1].wglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.eglue.strength;
+							bindSum = bindSum + candidateTile.eglue.strength;
+							console.log(bindSum);
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x, sticky_y - 1, candidateTile);
@@ -93,9 +94,10 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 						//Check west of the cadidate tile
-						if(universe.grid[sticky_y - 2][sticky_x - 1] !== undefined && candidateTile.wglue.label == universe.grid[sticky_y - 2][sticky_x - 1].eglue){
+						if((universe.grid[sticky_y - 2] !== undefined && universe.grid[sticky_y - 2][sticky_x - 1] !== undefined) && candidateTile.wglue !== null && universe.grid[sticky_y - 2][sticky_x - 1].eglue !== null &&  candidateTile.wglue.label === universe.grid[sticky_y - 2][sticky_x - 1].eglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.wglue.strength;
+							bindSum = bindSum + candidateTile.wglue.strength;
+							console.log(bindSum);
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x, sticky_y - 1, candidateTile);
@@ -109,23 +111,25 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 				}
 				
 				//If the tile east of the sticky tile is not set and the glue matches
-				if(universe.grid[sticky_y][sticky_x + 1] === undefined && candidateTile.wglue.label == universe.sticky[i].eglue.label){
+				else if(universe.grid[sticky_y][sticky_x + 1] === undefined && universe.sticky[i].eglue !== null && candidateTile.wglue !== null && candidateTile.wglue.label === universe.sticky[i].eglue.label){
 					//Add the strength to the bind sum
-					bindSum += candidateTile.wglue.strength;
+					bindSum = bindSum + candidateTile.wglue.strength;
 					//If the bind sum is greater than or equal to the temp
 					if(bindSum >= universe.temp){
 						//Insert the candidate tile
 						universe.insert(sticky_x + 1, sticky_y, candidateTile);
 						//Tile match!
 						match = true;
+						loopBreaker = 0;
 						continue;
 					}
 					//If the bind sum is not greater than or equal to the temp, check for cooperative binding
 					else{
 						//Check north of the cadidate tile
-						if(universe.grid[sticky_y - 1][sticky_x + 1] !== undefined && candidateTile.nglue.label == universe.grid[sticky_y - 1][sticky_x + 1].sglue){
+						if((universe.grid[sticky_y - 1] !== undefined && universe.grid[sticky_y - 1][sticky_x + 1] !== undefined) && candidateTile.nglue !== null &&  candidateTile.nglue.label === universe.grid[sticky_y - 1][sticky_x + 1].sglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.nglue.strength;
+							bindSum = bindSum + candidateTile.nglue.strength;
+							console.log(bindSum);
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x + 1, sticky_y, candidateTile);
@@ -136,9 +140,10 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 						//Check east of the cadidate tile
-						if(universe.grid[sticky_y][sticky_x + 2] !== undefined && candidateTile.eglue.label == universe.grid[sticky_y][sticky_x + 2].wglue){
+						if(universe.grid[sticky_y][sticky_x + 2] !== undefined && candidateTile.eglue !== null && candidateTile.eglue.label == universe.grid[sticky_y][sticky_x + 2].wglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.eglue.strength;
+							bindSum = bindSum + candidateTile.eglue.strength;
+							console.log(bindSum);
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x + 1, sticky_y, candidateTile);
@@ -148,10 +153,10 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 								continue;
 							}
 						}
-						//Check south of the cadidate tile
-						if(universe.grid[sticky_y + 1][sticky_x + 1] !== undefined && candidateTile.sglue.label == universe.grid[sticky_y + 1][sticky_x + 1].nglue){
+						if((universe.grid[sticky_y + 1] !== undefined && universe.grid[sticky_y + 1][sticky_x + 1] !== undefined) && candidateTile.sglue !== null &&  candidateTile.sglue.label == universe.grid[sticky_y + 1][sticky_x + 1].nglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.sglue.strength;
+							bindSum = bindSum + candidateTile.sglue.strength;
+							console.log(bindSum);
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x + 1, sticky_y, candidateTile);
@@ -162,12 +167,12 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 					}
+					console.log(bindSum);
 				}
-				
 				//If the tile south of the sticky tile is not set and the glue matches
-				if(universe.grid[sticky_y + 1][sticky_x] === undefined && candidateTile.nglue.label == universe.sticky[i].sglue.label){
+				else if((universe.grid[sticky_y + 1] === undefined || universe.grid[sticky_y + 1][sticky_x] === undefined) && universe.sticky[i].sglue !== null && candidateTile.nglue !== null &&  candidateTile.nglue.label == universe.sticky[i].sglue.label){
 					//Add the strength to the bind sum
-					bindSum += candidateTile.nglue.strength;
+					bindSum = bindSum + candidateTile.nglue.strength;
 					//If the bind sum is greater than or equal to the temp
 					if(bindSum >= universe.temp){
 						//Insert the candidate tile
@@ -180,9 +185,10 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 					//If the bind sum is not greater than or equal to the temp, check for cooperative binding
 					else{
 						//Check south of the cadidate tile
-						if(universe.grid[sticky_y + 2][sticky_x] !== undefined && candidateTile.sglue.label == universe.grid[sticky_y + 2][sticky_x].nglue){
+						if((universe.grid[sticky_y + 2] !== undefined && universe.grid[sticky_y + 2][sticky_x] !== undefined) && candidateTile.sglue !== null &&  candidateTile.sglue.label == universe.grid[sticky_y + 2][sticky_x].nglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.nglue.strength;
+							bindSum = bindSum + candidateTile.nglue.strength;
+							console.log(bindSum);
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x, sticky_y + 1, candidateTile);
@@ -193,9 +199,10 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 						//Check east of the cadidate tile
-						if(universe.grid[sticky_y + 1][sticky_x + 1] !== undefined && candidateTile.eglue.label == universe.grid[sticky_y + 1][sticky_x + 1].wglue){
+						if((universe.grid[sticky_y + 1] !== undefined && universe.grid[sticky_y + 1][sticky_x + 1] !== undefined) && candidateTile.eglue !== null && candidateTile.eglue.label == universe.grid[sticky_y + 1][sticky_x + 1].wglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.eglue.strength;
+							bindSum = bindSum + candidateTile.eglue.strength;
+							console.log(bindSum);
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x, sticky_y + 1, candidateTile);
@@ -206,9 +213,10 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 						//Check west of the cadidate tile
-						if(universe.grid[sticky_y + 1][sticky_x - 1] !== undefined && candidateTile.wglue.label == universe.grid[sticky_y + 1][sticky_x - 1].eglue){
+						if((universe.grid[sticky_y + 1] !== undefined && universe.grid[sticky_y + 1][sticky_x - 1] !== undefined) && candidateTile.wglue !== null &&  candidateTile.wglue.label == universe.grid[sticky_y + 1][sticky_x - 1].eglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.wglue.strength;
+							bindSum = bindSum + candidateTile.wglue.strength;
+							console.log(bindSum);
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x, sticky_y + 1, candidateTile);
@@ -222,24 +230,25 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 				}
 
 				//If the tile west of the sticky tile is not set and the glue matches
-				if(universe.grid[sticky_y][sticky_x - 1] === undefined && candidateTile.eglue.label == universe.sticky[i].wglue.label){
+				else if(universe.grid[sticky_y][sticky_x - 1] === undefined && universe.sticky[i].wglue !== null && candidateTile.eglue !== null && candidateTile.eglue.label == universe.sticky[i].wglue.label){
 					//Add the strength to the bind sum
-					bindSum += candidateTile.eglue.strength;
+					bindSum = bindSum + candidateTile.eglue.strength;
 					//If the bind sum is greater than or equal to the temp
 					if(bindSum >= universe.temp){
 						//Insert the candidate tile
 						universe.insert(sticky_x - 1, sticky_y, candidateTile);
 						//Tile match!
 						match = true;
-						loopBreaker = 0;
+						//loopBreaker = 0;
 						continue;
 					}
 					//If the bind sum is not greater than or equal to the temp, check for cooperative binding
 					else{
 						//Check north of the cadidate tile
-						if(universe.grid[sticky_y + 1][sticky_x - 1] !== undefined && candidateTile.nglue.label == universe.grid[sticky_y + 1][sticky_x - 1].sglue){
+						if((universe.grid[sticky_y + 1] !== undefined && universe.grid[sticky_y + 1][sticky_x - 1] !== undefined) && candidateTile.nglue !== null && candidateTile.nglue.label == universe.grid[sticky_y + 1][sticky_x - 1].sglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.nglue.strength;
+							bindSum = bindSum + candidateTile.nglue.strength;
+							console.log(bindSum);
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x - 1, sticky_y, candidateTile);
@@ -250,9 +259,10 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 						//Check west of the cadidate tile
-						if(universe.grid[sticky_y][sticky_x - 2] !== undefined && candidateTile.wglue.label == universe.grid[sticky_y][sticky_x - 2].eglue){
+						if(universe.grid[sticky_y][sticky_x - 2] !== undefined && candidateTile.wglue !== null &&  candidateTile.wglue.label == universe.grid[sticky_y][sticky_x - 2].eglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.wglue.strength;
+							bindSum = bindSum + candidateTile.wglue.strength;
+							console.log(bindSum);
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x - 1, sticky_y, candidateTile);
@@ -263,9 +273,10 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 						//Check south of the cadidate tile
-						if(universe.grid[sticky_y + 1][sticky_x - 1] !== undefined && candidateTile.sglue.label == universe.grid[sticky_y + 1][sticky_x - 1].nglue){
+						if((universe.grid[sticky_y + 1] !== undefined && universe.grid[sticky_y + 1][sticky_x - 1] !== undefined) && candidateTile.sglue !== null &&  candidateTile.sglue.label == universe.grid[sticky_y + 1][sticky_x - 1].nglue.label){
 							//Add the strength to the bind sum
-							bindSum =+ candidateTile.sglue.strength;
+							bindSum = bindSum + candidateTile.sglue.strength;
+							console.log(bindSum);
 							if(bindSum >= universe.temp){
 								//Insert the candidate tile
 								universe.insert(sticky_x - 1, sticky_y, candidateTile);
@@ -276,6 +287,7 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 					}
+					console.log(bindSum);
 				}
 			}
 			//If match set loopbreaker to 0
@@ -284,8 +296,9 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 			} else {
 				loopBreaker ++;
 			}
+
 			//If the loopbreaker is bigger than the tileset array, break out because nothing else can be assembled
-			if(loopBreaker > tileSet.set.length){
+			if(loopBreaker > 600){
 				break;
 			}
 			//Push the candidate tile back onto the array
@@ -301,45 +314,92 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 			for(var i=0; i<universe.grid.length; i++){
 				universe.grid[i].splice(null, 0, null);
 			}
+			// Readjust coordinates
+			for(var i=0; i<universe.sticky.length; i++){
+				universe.sticky[i].x ++;
+			}
 		}
 		//If the y value is less than zero (outside upper bound)
 		if(y < 0){
 			//Insert a new array at the beginning with a length of the other arrays
 			universe.grid.unshift(new Array());
+			// Readjust coordinates
+			for(var i=0; i<universe.sticky.length; i++){
+				universe.sticky[i].y ++;
+			}
 		}
 		//If there is not an array at the y value create one
 		if( universe.grid[y] === undefined ) {
 			universe.grid[y] = [];
-			console.log("Created new Array");
 		}
 		//Insert the tile into the location
 		universe.grid[y][x] = newTile;
+		//console.log(x + ", " + y);
 		//Add the coordinates to the sticky array
 		var occ = new Object();
 		occ.x = x;
 		occ.y = y;
+		occ.nglue = newTile.nglue;
+		occ.eglue = newTile.eglue;
+		occ.sglue = newTile.sglue;
+		occ.wglue = newTile.wglue;
 		universe.sticky.push(occ);
 	};
 	return universe;
 }]);
 
-atam.controller('atamCtrl', ['$scope', 'universe', function($scope, universe) {
+atam.controller('atamCtrl', ['$scope', 'universe', 'tileSet', function($scope, universe, tileSet) {
 
 	
 	$scope.createConstruct = function(){
 		//Test tile
-		var Tile1=new Object();
-		//Glue 1
+		var seed=new Object();
+		
 		var glue1 = new Object();
-		//Glue 2
 		var glue2 = new Object();
-		Tile1.nglue = glue1;
-		Tile1.sglue = glue2;
+		var glue3 = new Object();
+		var glue4 = new Object();
+		var glue5 = new Object();
+		var glue6 = new Object();
+		var glue7 = new Object();
+		var glue8 = new Object();
 		
-		universe.insert(50, 50, Tile1);
-		universe.insert(3, 58, Tile1);
+		glue1.label = "1";
+		glue2.label = "2";
+		glue3.label = "3";
+		glue4.label = "4";
+		glue5.label = "5";
+		glue6.label = "6";
+		glue7.label = "7";
+		glue8.label = "8";
+		glue1.strength = 2;
+		glue2.strength = 2;
+		glue3.strength = 2;
+		glue4.strength = 2;
+		glue5.strength = 2;
+		glue6.strength = 2;
+		glue7.strength = 1;
+		glue8.strength = 1;
 		
+		seed.nglue = glue1;
+		seed.eglue = glue2;
+		seed.sglue = null;
+		seed.wglue = null;
+		
+		
+		universe.insert(50, 50, seed);
+		
+		//Add tiles to tileset
+		tileSet.newTile("new1", glue7, glue3, null, glue2 );
+		tileSet.newTile("new2", glue7, null, null, glue3 );
+		tileSet.newTile("new3", glue5, glue8, glue1, null );
+		tileSet.newTile("new4", null, glue8, glue5, null );
+		tileSet.newTile("new5", glue7, glue8, glue7, glue8 );
+
+		universe.assemble();
 		console.log(universe);
+		console.log("testing");
+				
 	};
 	$scope.createConstruct();
 }]);

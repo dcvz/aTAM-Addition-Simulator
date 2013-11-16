@@ -14,4 +14,25 @@
 		</body>
 		<!--aTAM Library-->
 		<script src="./js/atam.js"></script>
+		<script>
+		// Set up!
+		var a_canvas = document.getElementById("theUniverse");
+		var context = a_canvas.getContext("2d");
+
+		var scale = 40;
+
+		// Draw tiles
+		funky(0, 0, 'A');
+		funky(1, 0, 'B');
+		funky(3, 0, 'A');
+
+		function funky(x, y, state) {
+			context.rect(x*scale, y*scale, scale, scale);
+			context.lineWidth = 1;
+			context.stroke();
+			context.font = "25px Garmond";
+			context.fillText(state, x*scale + 11, y*scale + (scale/1.5));
+		}
+
+		</script>
 	</html>

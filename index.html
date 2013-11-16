@@ -7,7 +7,7 @@
 		</head>
 		<body ng-controller="atamCtrl">
 		<div>
-			<canvas id="theUniverse" width="200" height="200">
+			<canvas id="theUniverse" width="600" height="600">
 			<p>Your browser doesn't support canvas.</p>
 			</canvas>
 		</div>
@@ -20,18 +20,24 @@
 		var context = a_canvas.getContext("2d");
 
 		var scale = 40;
+		var offset = 200;
 
 		// Draw tiles
 		funky(0, 0, 'A');
 		funky(1, 0, 'B');
-		funky(3, 0, 'A');
+		funky(2, 0, 'C');
+		funky(3, 0, 'D');
+		funky(0, 1, 'E');
+		funky(0, 2, 'F');
+		funky(-1, 0, 'G');
+		funky(0, -1, 'H');
 
 		function funky(x, y, state) {
-			context.rect(x*scale, y*scale, scale, scale);
+			context.rect(offset + (x*scale) + 1, offset + (y*scale) + 1, scale, scale);
 			context.lineWidth = 1;
 			context.stroke();
 			context.font = "25px Garmond";
-			context.fillText(state, x*scale + 11, y*scale + (scale/1.5));
+			context.fillText(state, offset + (x*scale) + 12, offset + (y*scale) + 29);
 		}
 		</script>
 	</html>

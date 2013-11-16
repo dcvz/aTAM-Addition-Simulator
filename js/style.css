@@ -1,0 +1,16 @@
+#btn{
+	margin-bottom: 100px;
+	margin-left: 800px;
+}
+#input1{
+	margin-top: 50px;
+	margin-left: 700px;
+}
+#input2{
+	margin-left:700px;
+}
+.error{
+	
+	font-style: red;
+	visibility: none;
+}

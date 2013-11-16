@@ -269,7 +269,7 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 						//Check south of the cadidate tile
-						if((universe.grid[sticky_y + 1] !== undefined && universe.grid[sticky_y + 1][sticky_x - 1] !== undefined) && candidateTile.sglue !== null &&  candidateTile.sglue.label == universe.grid[sticky_y + 1][sticky_x - 1].nglue.label){
+						if((universe.grid[sticky_y + 1] !== undefined && universe.grid[sticky_y + 1][sticky_x - 1] !== undefined) && candidateTile.sglue !== null &&  universe.grid[sticky_y + 1][sticky_x - 1].nglue !== null && candidateTile.sglue.label == universe.grid[sticky_y + 1][sticky_x - 1].nglue.label){
 							//Add the strength to the bind sum
 							bindSum = bindSum + candidateTile.sglue.strength;
 							if(bindSum >= universe.temp){
@@ -308,6 +308,7 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 			//Add an element on to the front of each array
 			for(var i=0; i<universe.grid.length; i++){
 				universe.grid[i].splice(null, 0, null);
+				x = 0;
 			}
 			// Readjust coordinates
 			for(var i=0; i<universe.sticky.length; i++){
@@ -318,6 +319,7 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 		if(y < 0){
 			//Insert a new array at the beginning with a length of the other arrays
 			universe.grid.unshift(new Array());
+			y = 0;
 			// Readjust coordinates
 			for(var i=0; i<universe.sticky.length; i++){
 				universe.sticky[i].y ++;
@@ -338,6 +340,7 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 		occ.eglue = newTile.eglue;
 		occ.sglue = newTile.sglue;
 		occ.wglue = newTile.wglue;
+		occ.label = newTile.label;
 		universe.sticky.push(occ);
 	};
 	return universe;
@@ -380,9 +383,9 @@ atam.controller('atamCtrl', ['$scope', 'universe', 'tileSet', function($scope, u
 		seed.eglue = glue1;
 		seed.sglue = null;
 		seed.wglue = null;
+		seed.label = "A";
 		
-		
-		universe.insert(50, 50, seed);
+		universe.insert(1, 1, seed);
 		
 		//Add tiles to tileset
 		/*
@@ -393,18 +396,46 @@ atam.controller('atamCtrl', ['$scope', 'universe', 'tileSet', function($scope, u
 		tileSet.newTile("new5", glue7, glue8, glue7, glue8 );
 		*/
 		
-		tileSet.newTile("new1", glue7, glue3, null, glue1 );
-		tileSet.newTile("new2", glue4, glue8, glue2, null );
-		tileSet.newTile("new3", glue7, glue5, null, glue3 );
-		tileSet.newTile("new3", glue6, glue8, glue4, null );
-		tileSet.newTile("new3", glue7, null, null, glue5 );
-		tileSet.newTile("new3", null, glue8, glue6, null );
-		tileSet.newTile("new3", glue7, glue8, glue7, glue8 );
+		tileSet.newTile("B", glue7, glue3, null, glue1 );
+		tileSet.newTile("C", glue4, glue8, glue2, null );
+		tileSet.newTile("D", glue7, glue5, null, glue3 );
+		tileSet.newTile("E", glue6, glue8, glue4, null );
+		tileSet.newTile("F", glue7, null, null, glue5 );
+		tileSet.newTile("G", null, glue8, glue6, null );
+		tileSet.newTile("H", glue7, glue8, glue7, glue8 );
 
 
 		universe.assemble();
 		console.log(universe);
 		console.log("testing");
+		var canvas = document.getElementById("theUniverse");
+		var context = canvas.getContext("2d");
+
+		var scale = 40;
+		var offset = 200;
+
+		// Draw tiles
+		for(var i=0; i < universe.sticky.length; i++){
+			drawTile(universe.sticky[i].x, universe.sticky[i].y, universe.sticky[i].label);
+		}
+
+		function drawTile(x, y, state) {
+			context.rect(offset + (x*scale) + 1, offset + (y*scale) + 1, scale, scale);
+			context.lineWidth = 1;
+			context.strokeStyle = createRandomColor();
+			context.stroke();
+			context.font = "25px Garmond";
+			context.fillText(state, offset + (x*scale) + 12, offset + (y*scale) + 29);
+		}
+
+		function createRandomColor() {
+		    var letters = '0123456789ABCDEF'.split('');
+		    var color = '#';
+		    for (var i = 0; i < 6; i++ ) {
+		        color += letters[Math.round(Math.random() * 15)];
+		    }
+		    return color;
+		}
 				
 	};
 	$scope.createConstruct();

@@ -11,11 +11,11 @@ moveTo(0,0);
 }
 
 $("#input1").click(function(){
-	$(".errors").hide();
+	$("#errors1").hide();
 })
 
 $("#input2").click(function(){
-	$(".errors").hide();
+	$("#errors2").hide();
 })
 
 $("#input1").blur(function(){
@@ -27,8 +27,7 @@ $("#input1").blur(function(){
 
 		if(input1[i]!=0 && input1[i]!=1)
 		{
-			$(".error").html('<p class="errors"> You Entered A NON-binary number</p>');
-			$(".errors").show();
+			$(".error1").html('<p class="errors" id="errors1"> You Entered A NON-binary number</p>');
 		}
 
 	}
@@ -42,8 +41,7 @@ $("#input2").blur(function(){
 	{
 		if(input2[i]!=0 && input2[i]!=1)
 		{
-			$(".error").html('<p class="errors"> You Entered A NON-binary number</p>');
-			$(".errors").show();
+			$(".error2").html('<p class="errors" id="errors2"> You Entered A NON-binary number</p>');
 		}
 
 	}

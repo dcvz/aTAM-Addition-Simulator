@@ -15,11 +15,11 @@ atam.factory('tileSet', [function() {
 		new_tile.wglue = w_glue;
 		tileSet.set.push(new_tile);
 	}
-	return tileset;
+	return tileSet;
 }]);
 
 //The current universe of active tiles
-atam.factory('universe', 'tileSet', [function(tileSet) {
+atam.factory('universe', ['tileSet', function(tileSet) {
 	//The universe object
 	var universe = new Object();
 	//The temperature of the universe

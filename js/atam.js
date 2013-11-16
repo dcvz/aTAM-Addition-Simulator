@@ -23,7 +23,13 @@ atam.factory('universe', [function() {
 		
 	}
 	
-	//
+	//Insert a tile into at a specific location
+	//Input: X coord, Y coord, a tile object
+	function insert(x, y, newTile){
+		//If the x value to insert is less than zero (outside left bound)
+		if(x < 0){
+			universe.grid.splice(0, 0, nil
+	}
 	return universe;
 }]);
 

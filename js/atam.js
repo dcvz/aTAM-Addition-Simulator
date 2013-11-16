@@ -19,7 +19,7 @@ atam.factory('tileSet', [function() {
 }]);
 
 //The current universe of active tiles
-atam.factory('universe', ['tileSet', function(tileSet) {
+atam.factory('universe', ['tileSet', 'graphics', function(tileSet, graphics) {
 	//The universe object
 	var universe = new Object();
 	//The temperature of the universe
@@ -357,7 +357,7 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 	return universe;
 }]);
 
-atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', function($scope, $http, universe, tileSet) {
+atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics', function($scope, $http, universe, tileSet, graphics) {
 	
 	$scope.readDataSet = function(){
 		$http({method: 'GET', url: '/js/tileset.js'}).success(function(data, status, headers, config) {
@@ -510,41 +510,44 @@ atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', function(
 		tileSet.newTile("G", null, glue8, glue6, null );
 		tileSet.newTile("H", glue7, glue8, glue7, glue8 );
 		*/
-
+		for(var i=0; i<universe.sticky.length; i++){
+			graphics.drawTile(universe.sticky[i].x, universe.sticky[i].y, universe.sticky[i].label);
+		}
 		universe.assemble();
 		console.log(universe.sticky);
 		console.log("testing");
-		var canvas = document.getElementById("theUniverse");
-		var context = canvas.getContext("2d");
-
-		var scale = 40;
-		var offset = 200;
-
-		// Draw tiles
-		for(var i=0; i < universe.sticky.length; i++){
-			drawTile(universe.sticky[i].x, universe.sticky[i].y, universe.sticky[i].label);
-		}
-
-		function drawTile(x, y, state) {
-			context.rect(offset + (x*scale) + 1, offset + (y*scale) + 1, scale, scale);
-			context.lineWidth = 1;
-			context.strokeStyle = createRandomColor();
-			context.stroke();
-			context.font = "25px Garmond";
-			context.fillText(state, offset + (x*scale) + 12, offset + (y*scale) + 29);
-		}
-
-		function createRandomColor() {
-		    var letters = '0123456789ABCDEF'.split('');
-		    var color = '#';
-		    for (var i = 0; i < 6; i++ ) {
-		        color += letters[Math.round(Math.random() * 15)];
-		    }
-		    return color;
-		}
+		
 				
 	};
 	$scope.createConstruct();
 }]);
 
 
+atam.factory('graphics', ['tileSet', function(tileSet) {
+		
+	var graphics = new Object();
+	canvas = document.getElementById("theUniverse");
+	context = canvas.getContext("2d");
+
+	scale = 40;
+	offset = 200;
+
+	graphics.drawTile = function(x, y, state) {
+		context.rect(offset + (x*scale) + 1, offset + (y*scale) + 1, scale, scale);
+		context.lineWidth = 1;
+		context.strokeStyle = createRandomColor();
+		context.stroke();
+		context.font = "25px Garmond";
+		context.fillText(state, offset + (x*scale) + 12, offset + (y*scale) + 29);
+	}
+
+	function createRandomColor() {
+		var letters = '0123456789ABCDEF'.split('');
+		var color = '#';
+		for (var i = 0; i < 6; i++ ) {
+			color += letters[Math.round(Math.random() * 15)];
+		}
+		return color;
+	}
+	return graphics;
+}]);

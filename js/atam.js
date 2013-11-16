@@ -24,6 +24,8 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 	var universe = new Object();
 	//The temperature of the universe
 	universe.temp = 2;
+	//An optional cycle counter
+	universe.cycleCount = null;
 	//Holds all the current active tiles
 	universe.grid = [];
 	//An array that contains all the currently sticky tiles
@@ -37,6 +39,8 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 	universe.assemble = function(){
 		//Loop breaker
 		var loopBreaker = 0;
+		//Optional cycle checker
+		var currentCycle = 0;
 		while(true){
 			//Dequeue the first item out of the unique tileset
 			var candidateTile = tileSet.set.shift();
@@ -80,7 +84,7 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 						//Check east of the cadidate tile
-						if((universe.grid[sticky_y - 1] !== undefined && universe.grid[sticky_y - 1][sticky_x + 1] !== undefined) && candidateTile.eglue !== null && candidateTile.eglue.label == universe.grid[sticky_y - 1][sticky_x + 1].wglue.label){
+						if((universe.grid[sticky_y - 1] !== undefined && universe.grid[sticky_y - 1][sticky_x + 1] !== undefined) && candidateTile.eglue !== null && universe.grid[sticky_y - 1][sticky_x + 1].wglue !== null && candidateTile.eglue.label == universe.grid[sticky_y - 1][sticky_x + 1].wglue.label){
 							//Add the strength to the bind sum
 							bindSum = bindSum + candidateTile.eglue.strength;
 							console.log(bindSum);
@@ -126,7 +130,7 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 					//If the bind sum is not greater than or equal to the temp, check for cooperative binding
 					else{
 						//Check north of the cadidate tile
-						if((universe.grid[sticky_y - 1] !== undefined && universe.grid[sticky_y - 1][sticky_x + 1] !== undefined) && candidateTile.nglue !== null &&  candidateTile.nglue.label == universe.grid[sticky_y - 1][sticky_x + 1].sglue.label){
+						if((universe.grid[sticky_y - 1] !== undefined && universe.grid[sticky_y - 1][sticky_x + 1] !== undefined) && candidateTile.nglue !== null && universe.grid[sticky_y - 1][sticky_x + 1].sglue !== null &&  candidateTile.nglue.label == universe.grid[sticky_y - 1][sticky_x + 1].sglue.label){
 							//Add the strength to the bind sum
 							bindSum = bindSum + candidateTile.nglue.strength;
 							console.log(bindSum);
@@ -140,7 +144,7 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 						//Check east of the cadidate tile
-						if(universe.grid[sticky_y][sticky_x + 2] !== undefined && candidateTile.eglue !== null && candidateTile.eglue.label == universe.grid[sticky_y][sticky_x + 2].wglue.label){
+						if(universe.grid[sticky_y][sticky_x + 2] !== undefined && candidateTile.eglue !== null && universe.grid[sticky_y][sticky_x + 2].wglue !== null && candidateTile.eglue.label == universe.grid[sticky_y][sticky_x + 2].wglue.label){
 							//Add the strength to the bind sum
 							bindSum = bindSum + candidateTile.eglue.strength;
 							console.log(bindSum);
@@ -256,7 +260,7 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 							}
 						}
 						//Check west of the cadidate tile
-						if(universe.grid[sticky_y][sticky_x - 2] !== undefined && candidateTile.wglue !== null &&  candidateTile.wglue.label == universe.grid[sticky_y][sticky_x - 2].eglue.label){
+						if(universe.grid[sticky_y][sticky_x - 2] !== undefined && candidateTile.wglue !== null && universe.grid[sticky_y][sticky_x - 2].eglue !== null && candidateTile.wglue.label == universe.grid[sticky_y][sticky_x - 2].eglue.label){
 							//Add the strength to the bind sum
 							bindSum = bindSum + candidateTile.wglue.strength;
 							if(bindSum >= universe.temp){
@@ -298,6 +302,13 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 			}
 			//Push the candidate tile back onto the array
 			tileSet.set.push(candidateTile);
+			//If cycleCounter is set
+			if(universe.cycleCount !== null){
+				currentCycle ++;
+				if(currentCycle > universe.cycleCount){
+					break;
+				}
+			}
 		}
 	};
 	//Insert a tile into at a specific location
@@ -346,13 +357,62 @@ atam.factory('universe', ['tileSet', function(tileSet) {
 	return universe;
 }]);
 
-atam.controller('atamCtrl', ['$scope', 'universe', 'tileSet', function($scope, universe, tileSet) {
-
+atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', function($scope, $http, universe, tileSet) {
 	
+	$scope.readDataSet = function(){
+		$http({method: 'GET', url: '/js/tileset.js'}).success(function(data, status, headers, config) {
+			console.log(data);
+			var list = data;
+
+			for(i in list.Tiles)
+			{
+				//North glue
+				var nglue = new Object();
+				nglue.label = list.Tiles[i].Nglue;
+				nglue.strength = list.Tiles[i].Nstrength;
+				//East glue
+				var eglue = new Object();
+				eglue.label = list.Tiles[i].Eglue;
+				eglue.strength = list.Tiles[i].Estrength;
+				//South glue
+				var sglue = new Object();
+				sglue.label = list.Tiles[i].Sglue;
+				sglue.strength = list.Tiles[i].Sstrength;
+				//West glue
+				var wglue = new Object();
+				wglue.label = list.Tiles[i].Wglue;
+				wglue.strength = list.Tiles[i].Wstrength;
+				
+				//If north glue is null
+				if(nglue == "null"){
+					nglue = null;
+				}
+				//If east glue is null
+				if(eglue == "null"){
+					eglue = null;
+				}
+				//If south glue is null
+				if(sglue == "null"){
+					sglue = null;
+				}
+				//If west glue is null
+				if(wglue == "null"){
+					wglue = null;
+				}
+				
+				//Add the tile to the tile set
+				tileSet.newTile(list.Tiles[i].tileName, nglue, eglue, sglue, wglue);
+			}
+		
+		});
+	};
+	
+	$scope.readDataSet();
 	$scope.createConstruct = function(){
 		//Test tile
-		var seed=new Object();
-		
+		var l=new Object();
+		var r=new Object();
+		/*
 		var glue1 = new Object();
 		var glue2 = new Object();
 		var glue3 = new Object();
@@ -378,14 +438,60 @@ atam.controller('atamCtrl', ['$scope', 'universe', 'tileSet', function($scope, u
 		glue6.strength = 2;
 		glue7.strength = 1;
 		glue8.strength = 1;
+		*/
 		
-		seed.nglue = glue2;
-		seed.eglue = glue1;
-		seed.sglue = null;
-		seed.wglue = null;
-		seed.label = "A";
+		var gluen = new Object();
+		gluen.label = "n";
+		gluen.strength = 1;
 		
-		universe.insert(1, 1, seed);
+		var glue0 = new Object();
+		glue0.label = "0";
+		glue0.strength = 1;
+		
+		var gluec = new Object();
+		gluec.label = "c";
+		gluec.strength = 1;
+		
+		var glue1 = new Object();
+		glue1.label = "1";
+		glue1.strength = 1;
+		
+		l.nglue = glue0;
+		l.eglue = null;
+		l.sglue = null;
+		l.wglue = null;
+		l.label = "L";
+		
+		r.nglue = null;
+		r.eglue = gluec;
+		r.sglue = null;
+		r.wglue = null;
+		r.label = "R";
+		
+		universe.insert(1, 1, r);
+		universe.insert(1, 2, r);
+		universe.insert(1, 3, r);
+		universe.insert(1, 4, r);
+		universe.insert(1, 5, r);
+		universe.insert(1, 6, r);
+		universe.insert(1, 7, r);
+		universe.insert(1, 8, r);
+		universe.insert(1, 9, r);
+		universe.insert(1, 10, r);
+		universe.insert(2, 11, l);
+		universe.insert(3, 11, l);
+		universe.insert(4, 11, l);
+		universe.insert(5, 11, l);
+		universe.insert(6, 11, l);
+		universe.insert(7, 11, l);
+		universe.insert(8, 11, l);
+		universe.insert(9, 11, l);
+		universe.insert(10, 11, l);
+		
+		tileSet.newTile("1", glue1, gluen, glue1, gluen);
+		tileSet.newTile("0", glue0, gluen, glue0, gluen);
+		tileSet.newTile("l", glue1, gluen, glue0, gluec);
+		tileSet.newTile("0", glue0, gluec, glue1, gluec);
 		
 		//Add tiles to tileset
 		/*
@@ -395,7 +501,7 @@ atam.controller('atamCtrl', ['$scope', 'universe', 'tileSet', function($scope, u
 		tileSet.newTile("new4", null, glue8, glue5, null );
 		tileSet.newTile("new5", glue7, glue8, glue7, glue8 );
 		*/
-		
+		/*
 		tileSet.newTile("B", glue7, glue3, null, glue1 );
 		tileSet.newTile("C", glue4, glue8, glue2, null );
 		tileSet.newTile("D", glue7, glue5, null, glue3 );
@@ -403,10 +509,10 @@ atam.controller('atamCtrl', ['$scope', 'universe', 'tileSet', function($scope, u
 		tileSet.newTile("F", glue7, null, null, glue5 );
 		tileSet.newTile("G", null, glue8, glue6, null );
 		tileSet.newTile("H", glue7, glue8, glue7, glue8 );
-
+		*/
 
 		universe.assemble();
-		console.log(universe);
+		console.log(universe.sticky);
 		console.log("testing");
 		var canvas = document.getElementById("theUniverse");
 		var context = canvas.getContext("2d");

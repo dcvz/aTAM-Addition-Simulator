@@ -3,12 +3,17 @@
 
 function getResults()
 {
-	$.ajax({crossDomain:true, url:"tileset.json"}).done(function(data)
-	{
-		var list = $.parseJSON(data);
-		console.log(list);
-	});
-};
+	$.ajax({url:"tileset.json",success:function(result){
+    console.log(result);
+    var list = result;
+
+    for(i in list.Tiles)
+    {
+    	console.log(list.Tiles[i].tileName);
+    }
+    
+  }});
+}
 
 /*
 function glue( label, strength ) {

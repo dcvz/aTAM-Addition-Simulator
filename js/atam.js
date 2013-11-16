@@ -5,6 +5,10 @@ atam.factory('tileSet', [function() {
 	var tileSet = {};
 	//Holds the set of unique tiles that are possible to use
 	tileSet.set = [];
+	//Insert
+	tileSet.insert = function(tile){
+		tileSet.set.push(tile);
+	}
 	//Create a new tile in the tile set
 	tileSet.newTile = function(label, n_glue, e_glue, s_glue, w_glue){
 		var new_tile = new Object();
@@ -44,6 +48,9 @@ atam.factory('universe', ['tileSet', 'graphics', function(tileSet, graphics) {
 		while(true){
 			//Dequeue the first item out of the unique tileset
 			var candidateTile = tileSet.set.shift();
+			if(candidateTile === undefined){
+				break;
+			}
 			//If a tile is matched this will be set to true
 			var match = false;
 			//Iterate through the occupied tiles and see if the tile will fit
@@ -71,7 +78,7 @@ atam.factory('universe', ['tileSet', 'graphics', function(tileSet, graphics) {
 					//If the bind sum is not greater than or equal to the temp, check for cooperative binding
 					else{
 						//Check north of the cadidate tile
-						if((universe.grid[sticky_y - 2] !== undefined && universe.grid[sticky_y - 2][sticky_x] !== undefined) && candidateTile.nglue !== null && candidateTile.nglue.label == universe.grid[sticky_y - 2][sticky_x].sglue.label){
+						if((universe.grid[sticky_y - 2] !== undefined && universe.grid[sticky_y - 2][sticky_x] !== undefined) && candidateTile.nglue !== null && universe.grid[sticky_y - 2][sticky_x].sglue !== null && candidateTile.nglue.label == universe.grid[sticky_y - 2][sticky_x].sglue.label){
 							//Add the strength to the bind sum
 							bindSum = bindSum + candidateTile.nglue.strength;
 							if(bindSum >= universe.temp){
@@ -247,7 +254,7 @@ atam.factory('universe', ['tileSet', 'graphics', function(tileSet, graphics) {
 					//If the bind sum is not greater than or equal to the temp, check for cooperative binding
 					else{
 						//Check north of the cadidate tile
-						if((universe.grid[sticky_y + 1] !== undefined && universe.grid[sticky_y + 1][sticky_x - 1] !== undefined) && candidateTile.nglue !== null && candidateTile.nglue.label == universe.grid[sticky_y + 1][sticky_x - 1].sglue.label){
+						if((universe.grid[sticky_y + 1] !== undefined && universe.grid[sticky_y + 1][sticky_x - 1] !== undefined) && candidateTile.nglue !== null && universe.grid[sticky_y + 1][sticky_x - 1].sglue !== null && candidateTile.nglue.label == universe.grid[sticky_y + 1][sticky_x - 1].sglue.label){
 							//Add the strength to the bind sum
 							bindSum = bindSum + candidateTile.nglue.strength;
 							if(bindSum >= universe.temp){
@@ -359,8 +366,8 @@ atam.factory('universe', ['tileSet', 'graphics', function(tileSet, graphics) {
 }]);
 
 atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics', '$timeout', function($scope, $http, universe, tileSet, graphics, $timeout) {
-	$scope.numberA = "100110101";
-	$scope.numberB = "110101100";
+	$scope.numberB = "100110101";
+	$scope.numberA = "110101100";
 	
 	//Number of digits
 	var numDigits = $scope.numberA.length;
@@ -368,6 +375,8 @@ atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics
 	var numSections = Math.sqrt(numDigits);
 	numSections = Math.floor(numSections);
 	console.log(numSections);
+	
+	
 	
 	$scope.fastAdder = function(){
 		var glue1 = new Object();
@@ -433,11 +442,12 @@ atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics
 		NC.wglue= glueNc;
 		NC.label = " ";
 		
-		var NC1 = new Object();
-		NC1.nglue = glueNc;
-		NC1.eglue = null;
-		NC1.sglue = null;
-		NC1.wglue = null;
+		var Nc1 = new Object();
+		Nc1.nglue = glueNc;
+		Nc1.eglue = null;
+		Nc1.sglue = null;
+		Nc1.wglue = null;
+		Nc1.label = " ";
 		
 		var sectionCounter = 0;
 		var intCounter = 1;
@@ -451,7 +461,7 @@ atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics
 		}
 		intCounter = 1;
 		
-		for(var i=0; i<numSections - 1; i++)
+		for(var i=0; i<numSections; i++)
 		{
 			universe.insert((2 * numSections) + 1, y, blank);
 			universe.insert((2 * numSections) + 1, ++y, blank);
@@ -482,58 +492,752 @@ atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics
 			intCounter = 1;
 			y++;
 		}
-		universe.insert(0, y, NC1);
+		universe.insert(0, y, Nc1);
 		universe.insert((2 * numSections) + 1, y, blank);
 		console.log(universe);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "B";
+		eglue.strength = 1;
+		eglue.label = "NC";
+		sglue.strength = 1;
+		sglue.label = "0";
+		wglue.strength = 1;
+		wglue.label = "0";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "B";
+		eglue.strength = 1;
+		eglue.label = "NC";
+		sglue.strength = 1;
+		sglue.label = "1";
+		wglue.strength = 1;
+		wglue.label = "1";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+	
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "B";
+		eglue.strength = 1;
+		eglue.label = "C";
+		sglue.strength = 1;
+		sglue.label = "0";
+		wglue.strength = 1;
+		wglue.label = "1";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);	
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "B";
+		eglue.strength = 1;
+		eglue.label = "C";
+		sglue.strength = 1;
+		sglue.label = "1";
+		wglue.strength = 1;
+		wglue.label = "10";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+				var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "0";
+		eglue.strength = 1;
+		eglue.label = "0";
+		sglue.strength = 1;
+		sglue.label = "0";
+		wglue.strength = 1;
+		wglue.label = "NC";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+				var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "1";
+		eglue.strength = 1;
+		eglue.label = "0";
+		sglue.strength = 1;
+		sglue.label = "1";
+		wglue.strength = 1;
+		wglue.label = "NC";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+				var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "1";
+		eglue.strength = 1;
+		eglue.label = "1";
+		sglue.strength = 1;
+		sglue.label = "0";
+		wglue.strength = 1;
+		wglue.label = "NC";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+				var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "0";
+		eglue.strength = 1;
+		eglue.label = "1";
+		sglue.strength = 1;
+		sglue.label = "1";
+		wglue.strength = 1;
+		wglue.label = "C";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "1";
+		eglue.strength = 1;
+		eglue.label = "10";
+		sglue.strength = 1;
+		sglue.label = "1";
+		wglue.strength = 1;
+		wglue.label = "C";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+				var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "0";
+		eglue.strength = 1;
+		eglue.label = "10";
+		sglue.strength = 1;
+		sglue.label = "0";
+		wglue.strength = 1;
+		wglue.label = "C";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "C";
+		sglue.strength = 1;
+		sglue.label = "0_1";
+		wglue.strength = 1;
+		wglue.label = "C";
+		tileSet.newTile("1", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "C";
+		sglue.strength = 1;
+		sglue.label = "1_0";
+		wglue.strength = 1;
+		wglue.label = "C";
+		tileSet.newTile("0", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "C";
+		sglue.strength = 1;
+		sglue.label = "0_0";
+		wglue.strength = 1;
+		wglue.label = "C";
+		tileSet.newTile("0", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "C";
+		sglue.strength = 1;
+		sglue.label = "1_1";
+		wglue.strength = 1;
+		wglue.label = "C";
+		tileSet.newTile("1", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "C";
+		sglue.strength = 1;
+		sglue.label = "B";
+		wglue.strength = 1;
+		wglue.label = "C";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "NC";
+		sglue.strength = 1;
+		sglue.label = "0_1";
+		wglue.strength = 1;
+		wglue.label = "NC";
+		tileSet.newTile("0", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "NC";
+		sglue.strength = 1;
+		sglue.label = "1_0";
+		wglue.strength = 1;
+		wglue.label = "NC";
+		tileSet.newTile("1", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "NC";
+		sglue.strength = 1;
+		sglue.label = "0_0";
+		wglue.strength = 1;
+		wglue.label = "NC";
+		tileSet.newTile("0", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "NC";
+		sglue.strength = 1;
+		sglue.label = "1_1";
+		wglue.strength = 1;
+		wglue.label = "NC";
+		tileSet.newTile("1", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "NC";
+		sglue.strength = 1;
+		sglue.label = "B";
+		wglue.strength = 1;
+		wglue.label = "NC";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "Z";
+		sglue.strength = 1;
+		sglue.label = "C";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile("1", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 0;
+		nglue.label = null;
+		eglue.strength = 1;
+		eglue.label = "Z";
+		sglue.strength = 1;
+		sglue.label = "NC";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile("0", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "NC_C1";
+		eglue.strength = 1;
+		eglue.label = "C";
+		sglue.strength = 1;
+		sglue.label = "NC";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "NC_NC1";
+		eglue.strength = 1;
+		eglue.label = "NC";
+		sglue.strength = 1;
+		sglue.label = "NC";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "C_C1";
+		eglue.strength = 1;
+		eglue.label = "C";
+		sglue.strength = 1;
+		sglue.label = "C";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "C_NC1";
+		eglue.strength = 1;
+		eglue.label = "NC";
+		sglue.strength = 1;
+		sglue.label = "C";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "NC_C";
+		eglue.strength = 1;
+		eglue.label = "F1";
+		sglue.strength = 1;
+		sglue.label = "NC_C1";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "NC_NC";
+		eglue.strength = 1;
+		eglue.label = "F1";
+		sglue.strength = 1;
+		sglue.label = "NC_NC1";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "C_C";
+		eglue.strength = 1;
+		eglue.label = "F1";
+		sglue.strength = 1;
+		sglue.label = "C_C1";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "C_C";
+		eglue.strength = 1;
+		eglue.label = "F1";
+		sglue.strength = 1;
+		sglue.label = "C_NC1";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "NC_C";
+		eglue.strength = 1;
+		eglue.label = "F";
+		sglue.strength = 1;
+		sglue.label = "NC_C1";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "NC_NC";
+		eglue.strength = 1;
+		eglue.label = "F";
+		sglue.strength = 1;
+		sglue.label = "NC_NC1";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "C_C";
+		eglue.strength = 1;
+		eglue.label = "F";
+		sglue.strength = 1;
+		sglue.label = "C_C1";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "C_NC";
+		eglue.strength = 1;
+		eglue.label = "F";
+		sglue.strength = 1;
+		sglue.label = "C_NC";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "2C";
+		eglue.strength = 1;
+		eglue.label = "NC";
+		sglue.strength = 2;
+		sglue.label = "NC_C";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "2NC";
+		eglue.strength = 1;
+		eglue.label = "NC";
+		sglue.strength = 2;
+		sglue.label = "NC_NC";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "2C";
+		eglue.strength = 1;
+		eglue.label = "C";
+		sglue.strength = 2;
+		sglue.label = "C_C";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 2;
+		nglue.label = "2NC";
+		eglue.strength = 1;
+		eglue.label = "C";
+		sglue.strength = 2;
+		sglue.label = "C_NC";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "C";
+		eglue.strength = 0;
+		eglue.label = null;
+		sglue.strength = 2;
+		sglue.label = "2C";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "NC";
+		eglue.strength = 0;
+		eglue.label = null;
+		sglue.strength = 2;
+		sglue.label = "2NC";
+		wglue.strength = 0;
+		wglue.label = null;
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "1_0";
+		eglue.strength = 1;
+		eglue.label = "F1";
+		sglue.strength = 1;
+		sglue.label = "1";
+		wglue.strength = 1;
+		wglue.label = "F";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "0_1";
+		eglue.strength = 1;
+		eglue.label = "F1";
+		sglue.strength = 1;
+		sglue.label = "0";
+		wglue.strength = 1;
+		wglue.label = "F";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "B";
+		eglue.strength = 1;
+		eglue.label = "F1";
+		sglue.strength = 1;
+		sglue.label = "B";
+		wglue.strength = 1;
+		wglue.label = "F";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "1_1";
+		eglue.strength = 1;
+		eglue.label = "F";
+		sglue.strength = 1;
+		sglue.label = "1";
+		wglue.strength = 1;
+		wglue.label = "F";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "0_0";
+		eglue.strength = 1;
+		eglue.label = "F";
+		sglue.strength = 1;
+		sglue.label = "0";
+		wglue.strength = 1;
+		wglue.label = "F";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
+		var tile = new Object();
+		var nglue = new Object();
+		var eglue = new Object();
+		var sglue = new Object();
+		var wglue = new Object();
+		nglue.strength = 1;
+		nglue.label = "B";
+		eglue.strength = 1;
+		eglue.label = "F";
+		sglue.strength = 1;
+		sglue.label = "B";
+		wglue.strength = 1;
+		wglue.label = "F";
+		tileSet.newTile(" ", nglue, eglue, sglue, wglue);
+		
 		universe.assemble();
+		console.log(universe.sticky);
+		delayDraw = function(){
+			$timeout(function(){
+				var tile = universe.sticky.shift();
+				if(tile !== undefined){
+					graphics.drawTile(tile.x, tile.y, tile.label);
+					delayDraw();
+				}
+			}, 50);
+		};
+		delayDraw();
 		
 	};
 	
 	$scope.readDataSet = function(){
-		$http({method: 'GET', url: 'js/fastAdderTileSet.json'}).success(function(data, status, headers, config) {
+		$http({method: 'GET', url: 'js/tileset.json'}).success(function(data, status, headers, config) {
 			console.log(data);
 			var list = data;
 
-			for(i in list.Tiles)
+			for(var i=0; i<list.Tiles.length; i++)
 			{
-			console.log("Testing");
-				//North glue
+			console.log("loop");
+				var tile = new Object();
 				var nglue = new Object();
-				nglue.label = list.Tiles[i].Nglue;
-				nglue.strength = list.Tiles[i].Nstrength;
-				//East glue
 				var eglue = new Object();
-				eglue.label = list.Tiles[i].Eglue;
-				eglue.strength = list.Tiles[i].Estrength;
-				//South glue
 				var sglue = new Object();
-				sglue.label = list.Tiles[i].Sglue;
-				sglue.strength = list.Tiles[i].Sstrength;
-				//West glue
 				var wglue = new Object();
-				wglue.label = list.Tiles[i].Wglue;
-				wglue.strength = list.Tiles[i].Wstrength;
 				
-				//If north glue is null
-				if(nglue == "null"){
-					nglue = null;
-				}
-				//If east glue is null
-				if(eglue == "null"){
-					eglue = null;
-				}
-				//If south glue is null
-				if(sglue == "null"){
-					sglue = null;
-				}
-				//If west glue is null
-				if(wglue == "null"){
-					wglue = null;
-				}
+				nglue.strength = list.Tiles[i].Nstrength;
+				nglue.label = "B";
+				
+				eglue.strength = list.Tiles[i].Estrength;
+				eglue.label = "NC";
+				
+				sglue.strength = list.Tiles[i].Sstrength;
+				sglue.label = "0";
+				
+				wglue.strength = list.Tiles[i].Wstrength;
+				wglue.label = "0";
+				
+				tile.nglue = nglue;
+				tile.eglue = eglue;
+				tile.sglue = sglue;
+				tile.wglue = wglue;
+				console.log(tile);
+				tileSet.insert(tile);
 				
 				//Add the tile to the tile set
 				tileSet.newTile(list.Tiles[i].tileName, nglue, eglue, sglue, wglue);
 			}
+			console.log("HELLO");
 			console.log(tileSet);
 		});
 	};
@@ -645,8 +1349,10 @@ atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics
 		delayDraw = function(){
 			$timeout(function(){
 				var tile = universe.sticky.shift();
-				graphics.drawTile(tile.x, tile.y, tile.label);
-				delayDraw();
+				if(tile !== undefined){
+					graphics.drawTile(tile.x, tile.y, tile.label);
+					delayDraw();
+				}
 			}, 50);
 		};
 		delayDraw();

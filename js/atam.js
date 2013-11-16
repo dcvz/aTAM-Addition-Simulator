@@ -2,18 +2,32 @@ var atam = angular.module('atam', []);
 
 //The set of unique tiles to be used in the construct
 atam.factory('tileSet', [function() {
-	var tileSet = [];
-	//Holds all tiles in the tileset
-
+	var tileSet = {};
+	//Holds the set of unique tiles that are possible to use
+	tileSet.set = [];
+	//Create a new tile in the tile set
+	tileSet.newTile = function(label, n_glue, e_glue, s_glue, w_glue){
+		var new_tile = new Object();
+		new_tile.label = label;
+		new_tile.nglue = n_glue;
+		new_tile.eglue = e_glue;
+		new_tile.sglue = s_glue;
+		new_tile.wglue = w_glue;
+		tileSet.set.push(new_tile);
+	}
 	return tileset;
 }]);
 
 //The current universe of active tiles
-atam.factory('universe', [function() {
+atam.factory('universe', 'tileSet', [function(tileSet) {
 	//The universe object
 	var universe = new Object();
+	//The temperature of the universe
+	universe.temp = 2;
 	//Holds all the current active tiles
 	universe.grid = [];
+	//An array that contains all the currently sticky tiles
+	universe.sticky = [];
 	//Initialize the universe with a seed construct
 	universe.init = function(seed){
 		//Set the current universe's grid to the seed grid
@@ -21,7 +35,17 @@ atam.factory('universe', [function() {
 	};
 	//Assemble the construct
 	universe.assemble = function(){
-		
+		//Dequeue the first item out of the unique tileset
+		var candidateTile = tileSet.set.shift();
+		//Iterate through the occupied tiles and see if the tile will fit
+		for(var i=0; i<universe.sticky.length; i++){
+			//The x coordinate of the current sticky tile
+			var sticky_x = universe.sticky[i].x;
+			//The y coordinate of the current sticky tile
+			var sticky_y = universe.sticky[i].y;
+			//If the tile north of the current tile isnt set
+			if(universe.grid[universe.sticky[i] === undefined
+		}
 	};
 	//Insert a tile into at a specific location
 	//Input: X coord, Y coord, a tile object
@@ -45,6 +69,11 @@ atam.factory('universe', [function() {
 		}
 		//Insert the tile into the location
 		universe.grid[y][x] = newTile;
+		//Add the coordinates to the sticky array
+		var occ = new Object();
+		occ.x = x;
+		occ.y = y;
+		universe.sticky.push(occ);
 	};
 	return universe;
 }]);

@@ -1,16 +1,34 @@
 <html> <head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<body> this is a test </body>
+<body> </body>
 
 <link rel="stylesheet" href="bootstrap-3.0.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="style.css">
 
 
-<canvas id="Box" width="500" height="500">
+	<div class="col-lg-4 searchbar">
+	<input type="text" id="input1" width="400px" class="form-control" placeholder="First Binary Number"></input>
+	</div>
+	<p class="error"> You did not enter a binary number!! <p>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+	<div class="col-lg-4 searchbar">
+	<input type="text" id="input2" width="400px" class="form-control" placeholder="Second Binary Number"></input>
+	</div>
+	<p class="error"> You did not enter a binary number!! <p>
+
+<br>
+
+<canvas id="Box" width="500" height="700">
 <p> Your browser doesn't support canvas. </p>
 </canvas>
+<br>
 
-<right>
-	<button type="button" class="btn btn-success">Assemble</button>
-</right>
+<button type="button" class="btn btn-success btn-lg" id="btn">Assemble</button>
+
 <script src="http://code.jquery.com/jquery.min.js"></script>
 
 <script src="tile.js"></script>

@@ -353,6 +353,8 @@ atam.factory('universe', ['tileSet', 'graphics', function(tileSet, graphics) {
 		occ.wglue = newTile.wglue;
 		occ.label = newTile.label;
 		universe.sticky.push(occ);
+
+		graphics.drawTile(x, y, occ.label);
 	};
 	return universe;
 }]);
@@ -360,7 +362,7 @@ atam.factory('universe', ['tileSet', 'graphics', function(tileSet, graphics) {
 atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics', function($scope, $http, universe, tileSet, graphics) {
 	
 	$scope.readDataSet = function(){
-		$http({method: 'GET', url: '/js/tileset.js'}).success(function(data, status, headers, config) {
+		$http({method: 'GET', url: 'js/tileset.js'}).success(function(data, status, headers, config) {
 			console.log(data);
 			var list = data;
 
@@ -510,9 +512,7 @@ atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics
 		tileSet.newTile("G", null, glue8, glue6, null );
 		tileSet.newTile("H", glue7, glue8, glue7, glue8 );
 		*/
-		for(var i=0; i<universe.sticky.length; i++){
-			graphics.drawTile(universe.sticky[i].x, universe.sticky[i].y, universe.sticky[i].label);
-		}
+		
 		universe.assemble();
 		console.log(universe.sticky);
 		console.log("testing");

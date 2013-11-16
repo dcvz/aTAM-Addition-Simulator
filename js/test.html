@@ -4,30 +4,16 @@
 <link rel="stylesheet" href="bootstrap-3.0.0/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="style.css">
 
-
-	<div class="col-lg-4 searchbar">
-	<input type="text" id="input1" width="400px" class="form-control" placeholder="First Binary Number"></input>
-	</div>
-	<div class="error1"></div>
-
-<br>
-<br>
-<br>
-<br>
-<br>
-	<div class="col-lg-4 searchbar">
-	<input type="text" id="input2" width="400px" class="form-control" placeholder="Second Binary Number"></input>
-	</div>
-	<div class="error2"></div>
-
-<br>
-<br>
-<canvas id="Box" width="500" height="700">
-<p> Your browser doesn't support canvas. </p>
-</canvas>
-<br>
-
-<button type="button" class="btn btn-success btn-lg" id="btn">Assemble</button>
+<div id="container">
+	<canvas id="Box">
+	<p> Your browser doesn't support canvas. </p>
+	</canvas>
+	<div class="rightdiv">
+	<input type="text" id="input1" class="form-control" placeholder="First Binary Number"></input>
+	<input type="text" id="input2" class="form-control" placeholder="Second Binary Number"></input>
+	<div class="error">You Entered A NON-binary number</div>
+	<button type="button" class="btn btn-success btn-lg" id="btn">Assemble</button>
+</div>
 
 <script src="http://code.jquery.com/jquery.min.js"></script>
 

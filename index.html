@@ -23,21 +23,31 @@
 		var offset = 200;
 
 		// Draw tiles
-		funky(0, 0, 'A');
-		funky(1, 0, 'B');
-		funky(2, 0, 'C');
-		funky(3, 0, 'D');
-		funky(0, 1, 'E');
-		funky(0, 2, 'F');
-		funky(-1, 0, 'G');
-		funky(0, -1, 'H');
+		drawTile(0, 0, 'A');
+		drawTile(1, 0, 'B');
+		drawTile(2, 0, 'C');
+		drawTile(3, 0, 'D');
+		drawTile(0, 1, 'E');
+		drawTile(0, 2, 'F');
+		drawTile(-1, 0, 'G');
+		drawTile(0, -1, 'H');
 
-		function funky(x, y, state) {
+		function drawTile(x, y, state) {
 			context.rect(offset + (x*scale) + 1, offset + (y*scale) + 1, scale, scale);
 			context.lineWidth = 1;
+			context.strokeStyle = createRandomColor();
 			context.stroke();
 			context.font = "25px Garmond";
 			context.fillText(state, offset + (x*scale) + 12, offset + (y*scale) + 29);
+		}
+
+		function createRandomColor() {
+		    var letters = '0123456789ABCDEF'.split('');
+		    var color = '#';
+		    for (var i = 0; i < 6; i++ ) {
+		        color += letters[Math.round(Math.random() * 15)];
+		    }
+		    return color;
 		}
 		</script>
 	</html>

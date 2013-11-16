@@ -9,8 +9,8 @@
 #input2{
 	margin-left:700px;
 }
-.error{
+.errors{
 	
-	font-style: red;
-	visibility: none;
+	color: red;
+	margin-left:200px;
 }

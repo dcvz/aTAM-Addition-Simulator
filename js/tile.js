@@ -1,4 +1,8 @@
 
+//$(document).ready(function(){
+	//$(".error").hide();
+//})
+
 var drawingCanvas = document.getElementById('Box');
 if(drawingCanvas.getContext) 
 {
@@ -12,9 +16,11 @@ $("#input1").blur(function(){
 	console.log(input1);
 	for( i in input1)
 	{
-		if(input1[i]!='0' || input1[i]!='1')
+
+		if(input1[i]!=0 && input1[i]!=1)
 		{
-			$(".error").show();
+			$(".error").html('<p class="errors"> You Entered A NON-binary number</p>');
+			$(".errors").show();
 		}
 
 	}
@@ -26,9 +32,10 @@ $("#input2").blur(function(){
 	console.log(input2);
 	for( i in input2)
 	{
-		if(input2[i]!='0' || input2[i]!='1')
+		if(input2[i]!=0 && input2[i]!=1)
 		{
-			$(".error").show();
+			$(".error").html('<p class="errors"> You Entered A NON-binary number</p>');
+			$(".errors").show();
 		}
 
 	}

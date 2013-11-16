@@ -354,20 +354,149 @@ atam.factory('universe', ['tileSet', 'graphics', function(tileSet, graphics) {
 		occ.label = newTile.label;
 		universe.sticky.push(occ);
 
-		graphics.drawTile(x, y, occ.label);
 	};
 	return universe;
 }]);
 
-atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics', function($scope, $http, universe, tileSet, graphics) {
+atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics', '$timeout', function($scope, $http, universe, tileSet, graphics, $timeout) {
+	$scope.numberA = "100110101";
+	$scope.numberB = "110101100";
+	
+	//Number of digits
+	var numDigits = $scope.numberA.length;
+	//Get the square root and floor it
+	var numSections = Math.sqrt(numDigits);
+	numSections = Math.floor(numSections);
+	console.log(numSections);
+	
+	$scope.fastAdder = function(){
+		var glue1 = new Object();
+		glue1.label = "1";
+		glue1.strength = 1;
+		
+		var glue0 = new Object();
+		glue0.label = "0";
+		glue0.strength = 1;
+		
+		var glueNc = new Object();
+		glueNc.label = "NC";
+		glueNc.strength = 1;
+		
+		var glueZ = new Object();
+		glueZ.label = "Z";
+		glueZ.strength = 1;
+	
+		var glueF1 = new Object();
+		glueF1.label = "F1";
+		glueF1.strength = 1;
+		
+		//Seed tiles
+		var z = new Object();
+		z.nglue = null;
+		z.eglue = null;
+		z.sglue = null;
+		z.wglue = glueZ;
+		z.label = " ";
+		
+		var blank = new Object();
+		blank.nglue = null;
+		blank.eglue = null;
+		blank.sglue = null;
+		blank.wglue = null;
+		blank.label = " ";
+		
+		var one = new Object();
+		one.nglue = glue1;
+		one.eglue = null;
+		one.sglue = null;
+		one.wglue = null;
+		one.label = "1";
+		
+		var zero = new Object();
+		zero.nglue = glue0;
+		zero.eglue = null;
+		zero.sglue = null;
+		zero.wglue = null;
+		zero.label = "0";
+		
+		var F1 = new Object();
+		F1.nglue = null;
+		F1.eglue = null;
+		F1.sglue = null;
+		F1.wglue = glueF1;
+		F1.label = " ";
+		
+		var NC = new Object();
+		NC.nglue = null;
+		NC.eglue = null;
+		NC.sglue = null;
+		NC.wglue= glueNc;
+		NC.label = " ";
+		
+		var NC1 = new Object();
+		NC1.nglue = glueNc;
+		NC1.eglue = null;
+		NC1.sglue = null;
+		NC1.wglue = null;
+		
+		var sectionCounter = 0;
+		var intCounter = 1;
+		var y = 2;
+		//Insert seed tiles
+		universe.insert(1, 1, z);
+		//Create the blank top row
+		while(intCounter <= 2 * numSections){
+			universe.insert(intCounter, y, blank);
+			intCounter++;
+		}
+		intCounter = 1;
+		
+		for(var i=0; i<numSections - 1; i++)
+		{
+			universe.insert((2 * numSections) + 1, y, blank);
+			universe.insert((2 * numSections) + 1, ++y, blank);
+			universe.insert((2 * numSections) + 1, ++y, F1);
+			universe.insert((2 * numSections) + 1, ++y, NC);
+			while(intCounter <= 2 * numSections){
+				if(intCounter % 2 != 0){
+					if($scope.numberA[0] == "1"){
+						universe.insert(intCounter, y+1, one); 
+						console.log($scope.numberA[0]);
+						$scope.numberA = $scope.numberA.substr(1);
+						console.log($scope.numberA);
+					} else {
+						universe.insert(intCounter, y+1, zero);
+						$scope.numberA = $scope.numberA.substr(1);
+					}
+				} else {
+					if($scope.numberB[0] == "1"){
+						universe.insert(intCounter, y+1, one);
+						$scope.numberB = $scope.numberB.substr(1);
+					} else {
+						universe.insert(intCounter, y+1, zero);
+						$scope.numberB = $scope.numberB.substr(1);
+					}
+				}
+				intCounter++;
+			}
+			intCounter = 1;
+			y++;
+		}
+		universe.insert(0, y, NC1);
+		universe.insert((2 * numSections) + 1, y, blank);
+		console.log(universe);
+		universe.assemble();
+		
+	};
 	
 	$scope.readDataSet = function(){
-		$http({method: 'GET', url: 'js/tileset.js'}).success(function(data, status, headers, config) {
+		$http({method: 'GET', url: 'js/fastAdderTileSet.json'}).success(function(data, status, headers, config) {
 			console.log(data);
 			var list = data;
 
 			for(i in list.Tiles)
 			{
+			console.log("Testing");
 				//North glue
 				var nglue = new Object();
 				nglue.label = list.Tiles[i].Nglue;
@@ -405,15 +534,16 @@ atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics
 				//Add the tile to the tile set
 				tileSet.newTile(list.Tiles[i].tileName, nglue, eglue, sglue, wglue);
 			}
-		
+			console.log(tileSet);
 		});
 	};
-	
 	$scope.readDataSet();
+	$scope.fastAdder();
+	
 	$scope.createConstruct = function(){
 		//Test tile
-		var l=new Object();
-		var r=new Object();
+		//var l=new Object();
+		//var r=new Object();
 		/*
 		var glue1 = new Object();
 		var glue2 = new Object();
@@ -440,10 +570,9 @@ atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics
 		glue6.strength = 2;
 		glue7.strength = 1;
 		glue8.strength = 1;
-		*/
-		
-		var gluen = new Object();
-		gluen.label = "n";
+
+		var glue1 = new Object();
+		gluen.label = "1";
 		gluen.strength = 1;
 		
 		var glue0 = new Object();
@@ -496,14 +625,13 @@ atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics
 		tileSet.newTile("0", glue0, gluec, glue1, gluec);
 		
 		//Add tiles to tileset
-		/*
+
 		tileSet.newTile("new1", glue7, glue3, null, glue2 );
 		tileSet.newTile("new2", glue7, null, null, glue3 );
 		tileSet.newTile("new3", glue5, glue8, glue1, null );
 		tileSet.newTile("new4", null, glue8, glue5, null );
 		tileSet.newTile("new5", glue7, glue8, glue7, glue8 );
-		*/
-		/*
+		
 		tileSet.newTile("B", glue7, glue3, null, glue1 );
 		tileSet.newTile("C", glue4, glue8, glue2, null );
 		tileSet.newTile("D", glue7, glue5, null, glue3 );
@@ -512,19 +640,28 @@ atam.controller('atamCtrl', ['$scope', '$http', 'universe', 'tileSet', 'graphics
 		tileSet.newTile("G", null, glue8, glue6, null );
 		tileSet.newTile("H", glue7, glue8, glue7, glue8 );
 		*/
-		
 		universe.assemble();
+
+		delayDraw = function(){
+			$timeout(function(){
+				var tile = universe.sticky.shift();
+				graphics.drawTile(tile.x, tile.y, tile.label);
+				delayDraw();
+			}, 50);
+		};
+		delayDraw();
+		
 		console.log(universe.sticky);
 		console.log("testing");
-		
-				
+			
 	};
-	$scope.createConstruct();
+	//$scope.createConstruct();
 }]);
 
 
-atam.factory('graphics', ['tileSet', function(tileSet) {
+atam.factory('graphics', ['tileSet', '$timeout', function(tileSet, $timeout) {
 		
+
 	var graphics = new Object();
 	canvas = document.getElementById("theUniverse");
 	context = canvas.getContext("2d");
@@ -540,7 +677,7 @@ atam.factory('graphics', ['tileSet', function(tileSet) {
 		context.font = "25px Garmond";
 		context.fillText(state, offset + (x*scale) + 12, offset + (y*scale) + 29);
 	}
-
+	
 	function createRandomColor() {
 		var letters = '0123456789ABCDEF'.split('');
 		var color = '#';

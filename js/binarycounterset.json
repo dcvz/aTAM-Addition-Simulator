@@ -1,0 +1,88 @@
+{
+    "Tiles": [
+    	{
+            "tileName": "A",
+            "Nglue": "1",
+            "Nstrength": "1",
+            "Eglue": "N",
+            "Estrength": "1",
+            "Sglue": "1",
+            "Sstrength": "1",
+            "Wglue": "N",
+            "Wstrength": "1",
+            "label": "null"
+      	},
+      	{
+            "tileName": "B",
+            "Nglue": "0",
+            "Nstrength": "1",
+            "Eglue": "N",
+            "Estrength": "1",
+            "Sglue": "0",
+            "Sstrength": "1",
+            "Wglue": "N",
+            "Wstrength": "1",
+            "label": "null"
+      	},
+      	{
+            "tileName": "C",
+            "Nglue": "1",
+            "Nstrength": "1",
+            "Eglue": "C",
+            "Estrength": "1",
+            "Sglue": "0",
+            "Sstrength": "1",
+            "Wglue": "N",
+            "Wstrength": "1",
+            "label": "null"
+      	},
+      	{
+            "tileName": "D",
+            "Nglue": "0",
+            "Nstrength": "1",
+            "Eglue": "C",
+            "Estrength": "1",
+            "Sglue": "1",
+            "Sstrength": "1",
+            "Wglue": "C",
+            "Wstrength": "1",
+            "label": "null"
+      	},
+      	{
+            "tileName": "R",
+            "Nglue": "V",
+            "Nstrength": "1",
+            "Eglue": "null",
+            "Estrength": "0",
+            "Sglue": "V",
+            "Sstrength": "1",
+            "Wglue": "C",
+            "Wstrength": "1",
+            "label": "null"
+      	},
+      	{
+            "tileName": "L",
+            "Nglue": "0",
+            "Nstrength": "1",
+            "Eglue": "H",
+            "Estrength": "1",
+            "Sglue": "null",
+            "Sstrength": "0",
+            "Wglue": "H",
+            "Wstrength": "1",
+            "label": "null"
+      	},
+      	{
+            "tileName": "S",
+            "Nglue": "V",
+            "Nstrength": "1",
+            "Eglue": "null",
+            "Estrength": "0",
+            "Sglue": "null",
+            "Sstrength": "0",
+            "Wglue": "H",
+            "Wstrength": "1",
+            "label": "null"
+      	}
+    ]
+}

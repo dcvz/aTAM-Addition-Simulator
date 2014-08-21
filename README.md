@@ -1,3 +1,6 @@
-hacktx
+aTAM Addition Simulator
 ======
-1. IP for Prod Website: 162.243.46.198
+
+This simulator was built for [HackTX 2014](http://hacktx.com) and is based on the abstract tile assembly model of computation.
+
+[Demo](http://dchavez.net/misc/hacktx2014/)
